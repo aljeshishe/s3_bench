@@ -20,11 +20,7 @@ s3.download_file(bucket_name, file_key, local_file_path, Config=boto3.s3.transfe
 
 end_time = time.time()
 download_time = end_time - start_time
-
-# Calculate the download speed
 file_size = os.path.getsize(local_file_path)
 download_speed = file_size / download_time / 1024 / 1024 # Convert to MB/s
-
-# Print the download speed
 print(f"Downloaded {file_size} bytes in {download_time} seconds")
 print(f"Download speed: {download_speed} MB/s")
