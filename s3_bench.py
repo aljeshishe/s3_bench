@@ -6,6 +6,7 @@ import os
 session = boto3.Session(profile_name='abml')
 s3 = session.client('s3')
 
+
 # Define S3 bucket and file to download
 bucket_name = 'tmp-grachev'
 object_key = 'random10g'
