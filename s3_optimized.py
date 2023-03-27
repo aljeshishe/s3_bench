@@ -5,9 +5,10 @@ import os
 import threading
 
 # Define the S3 bucket and object key for the file
-bucket_name = 'ml-bucket01'
-object_key = 'md/hk/BNN/GALABUSD.md/1669513140970565.data'
-session = boto3.Session(profile_name='ab')
+bucket_name = 'tmp-grachev'
+object_key = 'random10g'
+
+session = boto3.Session(profile_name='abml')
 
 # Define the number of threads to use for downloading the file
 num_threads = 10
@@ -18,7 +19,7 @@ def download_chunk(start_byte, end_byte, buffer):
     range_header = f"bytes={start_byte}-{end_byte}"
     response = s3.get_object(Bucket=bucket_name, Key=object_key, Range=range_header)
     data = response['Body'].read()
-    buffer[start_byte:end_byte+1] = data
+    # buffer[start_byte:end_byte+1] = data
 
 # Get the total size of the file
 s3 = session.client('s3')
@@ -26,7 +27,8 @@ response = s3.head_object(Bucket=bucket_name, Key=object_key)
 file_size = response['ContentLength']
 
 # Create a buffer to hold the file data
-buffer = bytearray(file_size)
+# buffer = bytearray(file_size)
+buffer = None
 
 # Divide the file into chunks and download them in parallel
 start_time = time.time()
@@ -44,13 +46,13 @@ for i in range(num_threads):
 # Wait for all threads to finish
 for thread in threads:
     thread.join()
+end_time = time.time()
 
 
 # Save the downloaded file to disk
-with open('downloaded-file', 'wb') as f:
-    f.write(buffer)
+#with open('downloaded-file', 'wb') as f:
+#    f.write(buffer)
 
-end_time = time.time()
 download_time = end_time - start_time
 download_speed = file_size / download_time / 1024 / 1024 # Convert to MB/s
 print(f"Downloaded {file_size} bytes in {download_time} seconds")
